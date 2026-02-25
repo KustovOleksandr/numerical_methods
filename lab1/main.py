@@ -82,24 +82,76 @@ energy_j = mass * g * total_ascent
 print(f"Механічна робота: {energy_j/1000:.2f} кДж") 
 print(f"Енергія: {energy_j / 4184:.2f} ккал") # 
 
-plt.figure(figsize=(10, 6))
-plt.scatter(distances, elevations, color='red', label='Вузли маршруту')
-x_plot = np.linspace(min(distances), max(distances), 500)
-y_plot = []
-for x in x_plot:
+fig, axs = plt.subplots(2, 2, figsize=(15, 10))
+fig.suptitle('Порівняння профілів при різній кількості вузлів', fontsize=16)
+
+node_steps = [10, 15, 20, 21]
+plot_positions = [(0, 0), (0, 1), (1, 0), (1, 1)]
+
+for count, pos in zip(node_steps, plot_positions):
+    ax = axs[pos[0], pos[1]]
+    
+    d_sub = distances[:count]
+    e_sub = elevations[:count]
+
+    ax.scatter(d_sub, e_sub, color='red', s=30, label='Вузли')
+    
+    x_sub = np.linspace(min(d_sub), max(d_sub), 200)
+    y_sub = []
+    
+    for x in x_sub:
+        idx = 0
+        for j in range(count - 1):
+            if distances[j] <= x <= distances[j+1]:
+                idx = j
+                break
+        dx = x - distances[idx]
+        y_val = a_coeffs[idx] + b_coeffs[idx]*dx + c_coeffs[idx]*(dx**2) + d_coeffs[idx]*(dx**3)
+        y_sub.append(y_val)
+        
+    ax.plot(x_sub, y_sub, color='blue', label='Сплайн')
+    ax.set_title(f'Кількість вузлів: {count}')
+    ax.set_xlabel('Відстань (м)')
+    ax.set_ylabel('Висота (м)')
+    ax.grid(True, linestyle='--', alpha=0.6)
+    ax.legend()
+
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.show()
+
+# --- БЛОК ВИВОДУ ПОХИБОК У КОНСОЛЬ ---
+print("\n--- АНАЛІЗ ПОХИБКИ ІНТЕРПОЛЯЦІЇ ---")
+
+# Функція для розрахунку значення сплайна в конкретній точці x
+def get_spline_value(x, count_limit):
     idx = 0
-    for j in range(n-1):
+    # Шукаємо інтервал серед доступної кількості вузлів
+    for j in range(count_limit - 1):
         if distances[j] <= x <= distances[j+1]:
             idx = j
             break
     dx = x - distances[idx]
-    y_val = a_coeffs[idx] + b_coeffs[idx]*dx + c_coeffs[idx]*(dx**2) + d_coeffs[idx]*(dx**3) # рівняння кубічного сплайна
-    y_plot.append(y_val)
+    return a_coeffs[idx] + b_coeffs[idx]*dx + c_coeffs[idx]*(dx**2) + d_coeffs[idx]*(dx**3)
 
-plt.plot(x_plot, y_plot, color='blue', label='Кубічний сплайн')
-plt.xlabel('Відстань (м)')
-plt.ylabel('Висота (м)')
-plt.title('Заросляк - Говерла')
-plt.grid(True)
-plt.legend()
-plt.show()
+# Порівнюємо різні конфігурації
+node_checks = [10, 15, 20]
+
+for count in node_checks:
+    errors = []
+    # Максимальна відстань, яку охоплює поточна кількість вузлів
+    max_d = distances[count - 1]
+    
+    # Беремо 100 контрольних точок для порівняння
+    test_points = np.linspace(0, max_d, 100)
+    
+    for tp in test_points:
+        # "Еталонне" значення (беремо з повного набору коефіцієнтів)
+        y_etalon = get_spline_value(tp, 21)
+        # Значення для поточної (зменшеної) кількості вузлів
+        y_current = get_spline_value(tp, count)
+        
+        errors.append(abs(y_etalon - y_current))
+    
+    print(f"===== {count} вузлів =====")
+    print(f"Максимальна похибка: {max(errors):.10f} м")
+    print(f"Середня похибка: {np.mean(errors):.10f} м\n")
