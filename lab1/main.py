@@ -106,7 +106,7 @@ for count, pos in zip(node_steps, plot_positions):
                 idx = j
                 break
         dx = x - distances[idx]
-        y_val = a_coeffs[idx] + b_coeffs[idx]*dx + c_coeffs[idx]*(dx**2) + d_coeffs[idx]*(dx**3)
+        y_val = a_coeffs[idx] + b_coeffs[idx]*dx + c_coeffs[idx]*(dx**2) + d_coeffs[idx]*(dx**3) # рівняння кубічного сплайна
         y_sub.append(y_val)
         
     ax.plot(x_sub, y_sub, color='blue', label='Сплайн')
@@ -118,40 +118,3 @@ for count, pos in zip(node_steps, plot_positions):
 
 plt.tight_layout(rect=[0, 0.03, 1, 0.95])
 plt.show()
-
-# --- БЛОК ВИВОДУ ПОХИБОК У КОНСОЛЬ ---
-print("\n--- АНАЛІЗ ПОХИБКИ ІНТЕРПОЛЯЦІЇ ---")
-
-# Функція для розрахунку значення сплайна в конкретній точці x
-def get_spline_value(x, count_limit):
-    idx = 0
-    # Шукаємо інтервал серед доступної кількості вузлів
-    for j in range(count_limit - 1):
-        if distances[j] <= x <= distances[j+1]:
-            idx = j
-            break
-    dx = x - distances[idx]
-    return a_coeffs[idx] + b_coeffs[idx]*dx + c_coeffs[idx]*(dx**2) + d_coeffs[idx]*(dx**3)
-
-# Порівнюємо різні конфігурації
-node_checks = [10, 15, 20]
-
-for count in node_checks:
-    errors = []
-    # Максимальна відстань, яку охоплює поточна кількість вузлів
-    max_d = distances[count - 1]
-    
-    # Беремо 100 контрольних точок для порівняння
-    test_points = np.linspace(0, max_d, 100)
-    
-    for tp in test_points:
-        # "Еталонне" значення (беремо з повного набору коефіцієнтів)
-        y_etalon = get_spline_value(tp, 21)
-        # Значення для поточної (зменшеної) кількості вузлів
-        y_current = get_spline_value(tp, count)
-        
-        errors.append(abs(y_etalon - y_current))
-    
-    print(f"===== {count} вузлів =====")
-    print(f"Максимальна похибка: {max(errors):.10f} м")
-    print(f"Середня похибка: {np.mean(errors):.10f} м\n")
