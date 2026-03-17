@@ -141,9 +141,6 @@ def fixed_step(x_data, diff_table):
     plt.grid(True)
     plt.show()
 
-# ==========================================
-# ГОЛОВНИЙ ЦИКЛ ПРОГРАМИ
-# ==========================================
 if __name__ == "__main__":
     
     x_points, y_points = read_data("data.csv")
@@ -160,7 +157,7 @@ if __name__ == "__main__":
     
     print("\n ПРОГНОЗ ДЛЯ 1000 ОБ'ЄКТІВ ")
     print(f"Метод Ньютона:           {round(fps_newton, 4)} FPS")
-    print(f"Факторіальний многочлен: {round(fps_factorial, 4)} FPS")
+    print(f"Факторіальний метод: {round(fps_factorial, 4)} FPS")
     print(f"Метод Лагранжа:          {round(fps_lagrange, 4)} FPS")
     
     plot_main_graph(x_points, y_points, table)
