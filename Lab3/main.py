@@ -1,10 +1,6 @@
 import csv
 import matplotlib.pyplot as plt
 
-# ==========================================
-# 1. ФУНКЦІЇ МНК (За псевдокодом та теорією)
-# ==========================================
-
 def form_matrix(x, m):
     A = [[0.0] * (m + 1) for _ in range(m + 1)]
     for i in range(m + 1):
@@ -39,7 +35,6 @@ def gauss_solve(A_in, b_in):
     return x_sol
 
 def polynomial(x_list, coef):
-    """Обчислення значень полінома"""
     y_poly = []
     for xi in x_list:
         val = sum(coef[i] * (xi ** i) for i in range(len(coef)))
@@ -49,10 +44,6 @@ def polynomial(x_list, coef):
 def variance(y_true, y_approx):
     n = len(y_true)
     return sum((y_true[i] - y_approx[i]) ** 2 for i in range(n)) / n
-
-# ==========================================
-# ОСНОВНА ПРОГРАМА
-# ==========================================
 
 def main():
     x = []
@@ -85,28 +76,22 @@ def main():
     optimal_coef = all_coefs[optimal_m]
     print(f"\nОптимальний ступінь: m = {optimal_m}") 
 
-    # Прогноз на наступні 3 місяці [cite: 98, 179]
     x_future = [25, 26, 27]
     y_future = polynomial(x_future, optimal_coef)
     
-    print("\n--- 3. Прогноз температури на наступні 3 місяці ---")
+    print("\nПрогноз температури на наступні 3 місяці")
     for i in range(len(x_future)):
         print(f"Місяць {int(x_future[i])}: {y_future[i]:.2f} °C") # 
     
-    # Похибка у вузлах [cite: 186]
     y_opt_nodes = polynomial(x, optimal_coef)
     errory = [abs(y[i] - y_opt_nodes[i]) for i in range(len(y))]
 
-    # ПОБУДОВА ГРАФІКІВ [cite: 193]
     plt.figure(figsize=(10, 12))
-
-    # Графік дисперсії
     plt.subplot(3, 1, 1)
     plt.plot(range(1, max_degree + 1), variances, 'ro-')
     plt.title("Дисперсія від степеня m")
     plt.grid(True)
 
-    # Графік апроксимації
     plt.subplot(3, 1, 2)
     plt.scatter(x, y, label='Дані')
     x_h = [x[0] + i*0.1 for i in range(int((x[-1]-x[0])*10)+1)]
@@ -115,7 +100,6 @@ def main():
     plt.title("Апроксимація та Прогноз")
     plt.legend()
 
-    # Графік похибки
     plt.subplot(3, 1, 3)
     plt.bar(x, errory, color='orange', alpha=0.6)
     plt.title("Похибка у вузлах")
