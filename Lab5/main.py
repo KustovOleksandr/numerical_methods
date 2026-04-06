@@ -119,7 +119,6 @@ plt.grid()
 plt.show()
 
 print("\nАдаптивний алгоритм")
-
 calls_count = 0
 
 def f_counted(x):
