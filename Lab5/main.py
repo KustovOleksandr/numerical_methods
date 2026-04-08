@@ -155,7 +155,7 @@ for d in deltas_test:
     actual_errors.append(real_eps)
     calls_history.append(calls_count)
     
-    print(f"При delta = {d}: Похибка = {real_eps:.2e}, Викликів = {calls_count}")
+    print(f"Інтеграл= {I_adapt} При delta = {d}: Похибка = {real_eps:.2e}, Викликів = {calls_count}")
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
