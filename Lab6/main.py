@@ -1,5 +1,6 @@
 import numpy as np
 
+np.random.seed(67)
 n = 100
 
 A = np.random.uniform(1.0, 10.0, (n, n))
