@@ -1,7 +1,7 @@
 import numpy as np
 
 np.random.seed(42)
-n = 100
+n = 200
 A = np.random.uniform(1.0, 10.0, (n, n))
 
 row_sums = np.sum(np.abs(A), axis=1)
@@ -14,7 +14,7 @@ B = A @ x_exact
 np.savetxt("vector_B.txt", B)
 
 def simple_iteration_method(A, B, eps, max_iter):
-    x = np.ones(100) 
+    x = np.ones(200) 
     
     norm_A = np.max(np.sum(np.abs(A), axis=1)) 
     r = 2.0 / norm_A
@@ -30,7 +30,7 @@ def simple_iteration_method(A, B, eps, max_iter):
     return x, max_iter
 
 def jacobi_method(A, B, eps, max_iter):
-    x = np.ones(100)
+    x = np.ones(200)
     
     D = np.diag(A)
     R = A - np.diag(D)
@@ -46,7 +46,7 @@ def jacobi_method(A, B, eps, max_iter):
     return x, max_iter
 
 def seidel_method(A, B, eps, max_iter):
-    x = np.ones(100)
+    x = np.ones(200)
     
     for k in range(max_iter):
         x_old = np.copy(x) 
@@ -62,23 +62,23 @@ def seidel_method(A, B, eps, max_iter):
             
     return x, max_iter
 
-A_from_file = np.loadtxt("matrix_A.txt")
-B_from_file = np.loadtxt("vector_B.txt")
+A_txt = np.loadtxt("matrix_A.txt")
+B_txt = np.loadtxt("vector_B.txt")
 
 eps_0 = 1e-14 
 maximum_iterations = 10000
 
-res_simple, iter_simple = simple_iteration_method(A_from_file, B_from_file, eps_0, maximum_iterations)
+res_simple, iter_simple = simple_iteration_method(A_txt, B_txt, eps_0, maximum_iterations)
 print("Метод простої ітерації:")
 print("Кількість ітерацій:", iter_simple)
 print("Перші 10 значення X:", res_simple[:10])
 
-res_jacobi, iter_jacobi = jacobi_method(A_from_file, B_from_file, eps_0, maximum_iterations)
+res_jacobi, iter_jacobi = jacobi_method(A_txt, B_txt, eps_0, maximum_iterations)
 print("\nМетод Якобі:")
 print("Кількість ітерацій:", iter_jacobi)
 print("Перші 10 значення X:", res_jacobi[:10])
 
-res_seidel, iter_seidel = seidel_method(A_from_file, B_from_file, eps_0, maximum_iterations)
+res_seidel, iter_seidel = seidel_method(A_txt, B_txt, eps_0, maximum_iterations)
 print("\nМетод Зейделя:")
 print("Кількість ітерацій:", iter_seidel)
 print("Перші 10 значення X:", res_seidel[:10])
