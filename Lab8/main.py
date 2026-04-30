@@ -215,7 +215,7 @@ if __name__ == "__main__":
     plot(A)
     
     res_real, it_r = newton_horner_method(A, 1.5, eps)
-    print(f"Дійсний корінь (Горнер): {res_real:.10f} (Ітерацій: {it_r})")
+    print(f"\nДійсний корінь (Горнер): {res_real:.10f} (Ітерацій: {it_r})")
     
     c1, c2, it_c = lin_method(A, 0.5, 1.5, eps)
-    print(f"Комплексні корені (Лін): {c1}, {c2} (Ітерацій: {it_c})")
+    print(f"\nКомплексні корені (Лін): {c1}, {c2} (Ітерацій: {it_c})")
